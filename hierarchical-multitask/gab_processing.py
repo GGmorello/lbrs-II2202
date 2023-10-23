@@ -17,6 +17,16 @@ with open(dir + 'nyc_poi2index.txt', 'w') as f:
 
 data['venue_id'] = data['venue_id'].astype('category').cat.codes + 1
 
+print(data.head(5))
+
+locations = data[['venue_id', 'latitude', 'longitude']].drop_duplicates()
+# if locations have same venue ID but different latitude and longitude, set latitude and longitude to the first value
+locations = locations.groupby(['venue_id']).first().reset_index()
+
+# use the longitude and latitude from locations to replace the longitude and latitude in data
+data = data.merge(locations, on='venue_id', how='left')
+# rename the latitude and longitude columns
+data = data.rename(columns={'latitude_x': 'latitude', 'longitude_x': 'longitude'})
 
 # refactor the User ID to growing integers and write to file the conversion from old to new
 old_user_id = data['user_id'].unique()
