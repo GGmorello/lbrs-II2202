@@ -17,25 +17,50 @@ if __name__ == '__main__':
 
     dataSource = "global_scale"
 
+
+    def view_file(file):
+        with open(file, 'rb') as handle:
+            allData = pickle.load(handle)
+        with open(file.split('.')[0] + '.vis', 'w') as handle:
+            handle.write(str(allData))
+
     # TODO what is geohash? internal ID? hash of lon+lat?
     file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_allData.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_beamSearchHashDict.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_data.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_geohash2Index_2.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_geohash2poi_2.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_beamSearchHashDict.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_data.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_geohash2Index_4.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_geohash2poi_2.pickle'
+    view_file(file)
     file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_globalIndex2latlon.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poi2geohash_6.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poi2index.pkl'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poi2timeslotList.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poi2geohash_6.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poi2index.pkl'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poi2timeslotList.pickle'
+    view_file(file)
     file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_poiCount.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_test.pkl'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_testData.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_timeSlot2Index.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_timeslot2POIlist.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_train.pkl'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_user2index.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_userCount.pickle'
-    # file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_usersData.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_test.pkl'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_testData.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_timeSlot2Index.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_timeslot2POIlist.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_train.pkl'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_user2index.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_userCount.pickle'
+    view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_usersData.pickle'
+    view_file(file)
 
     with open(file, 'rb') as handle:
         pickleData = pickle.load(handle)
