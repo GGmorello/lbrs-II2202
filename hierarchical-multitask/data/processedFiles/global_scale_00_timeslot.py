@@ -3,6 +3,8 @@ from datetime import datetime
 
 data_source = "global_scale"
 
+temporal_graph_curr_fname = data_source + "_temporal_test.edgelist"
+
 def reduce_timestamp_to_day(t):
     return t.split("-")[2].split("T")[0]
 
@@ -25,8 +27,57 @@ def reduce_timestamp_to_slot(ts, dow):
 
     return "" + str(slot)
 
+def compute_jaccard(slots1, slots2):
+    limit = 0.9
+    union = list(set(slots1 + slots2))
+    intersect = list(set(slots1) & set(slots2))
+    return (len(intersect)* 1.0)/(len(union)* 1.0) >= limit
+
+def create_temporal_dump(df):
+    pois_dict = dict()
+    slots_dict = dict()
+    for idx, row in df.iterrows():
+        poi = row['POI']
+        if not poi in pois_dict:
+            pois_dict[poi] = []
+
+        slot = row['slot']
+        pois_dict[poi].append(slot)
+
+        if slot not in slots_dict:
+            slots_dict[slot] = list()
+        if poi not in slots_dict[slot]:
+            slots_dict[slot].append(poi)
+    
+    f_temporal = open(temporal_graph_curr_fname, 'w')
+    keys = pois_dict.keys()
+    computed_pois = dict()
+    for poi in keys:
+        print("processing key", poi)
+        slots = pois_dict[poi]
+        for slot in slots:
+            # entries in slots_dict containt distinct values
+            other_pois = slots_dict[slot]
+            for other_poi in other_pois:
+                if ((poi in computed_pois and other_poi in computed_pois[poi]) or
+                    (other_poi in computed_pois and poi in computed_pois[other_poi])):
+                    continue
+                other_slots = pois_dict[other_poi]
+
+                if compute_jaccard(slots, other_slots):
+                    e = str(poi) + " " + str(other_poi) + " {}\n"
+                    print("adding edge to file", e)
+                    f_temporal.write(e)
+                
+                if poi not in computed_pois:
+                    computed_pois[poi] = []
+                if other_poi not in computed_pois:
+                    computed_pois[other_poi] = []
+
+                computed_pois[poi].append(other_poi)
+                computed_pois[other_poi].append(poi)
+    
 if __name__ == "__main__":
-    prefix = 'nyc_checkin_'
     file = data_source + "_allData.pickle"
     # file = "nycdata/test.tsv"
     columns = ['id','user id','venue id','venue cat id','lat', 'lon', 'offset', 'utc']
@@ -37,13 +88,12 @@ if __name__ == "__main__":
     df['h/m'] = df['timestamp'].apply(lambda t: t.split("T")[1])
     df['day_of_week'] = df['timestamp'].apply(lambda t: datetime.strptime(t, '%Y-%m-%dT%H:%M:%SZ').weekday())
     df['slot'] = df[['timestamp', 'day_of_week']].apply(lambda x: reduce_timestamp_to_slot(x[0], x[1]), axis=1)
-
-    grp = df.groupby(['slot'])
-    result = grp.agg({'timestamp': ['count']}).sort_values(by="slot")
-    print(result)
+    # grp = df.groupby(['slot'])
+    # result = grp.agg({'timestamp': ['count']}).sort_values(by="poi")
+    # print(result)
     # df['slot'] = df[['timestamp','day_of_week']].apply(lambda t: reduce_timestamp_to_slot(t, t))
     # df1 = df.apply(lambda row: row[df['POI'].isin([1,3641])]).sort_values(by=["POI", 'timestamp'])
     # df2 = df1[['POI','date','timestamp','day']]
     # df1 = df.sort_values(by="timestamp")
     #print()
-    # print(df)
+    create_temporal_dump(df)
