@@ -55,6 +55,8 @@ if __name__ == '__main__':
     view_file(file)
     file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_train.pkl'
     view_file(file)
+    file = 'data/' + arg['dataFolder'] + '/' + dataSource + '.pickle'
+    view_file(file)
     file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_user2index.pickle'
     view_file(file)
     file = 'data/' + arg['dataFolder'] + '/' + dataSource + '_userCount.pickle'
