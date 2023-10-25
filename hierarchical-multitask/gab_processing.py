@@ -83,6 +83,15 @@ train = data.groupby('USER')['POI'].apply(list).reset_index(name='POI')
 # put the lists in a list
 train = train['POI'].tolist()
 train = [train, [], []]
-print(train)
 with open(dir + 'nyc_train.pkl', 'wb') as f:
     pickle.dump(train, f)
+
+
+# Create a new file which is a copy or train but instead of having POI in each list, it has the USER id
+train_user = train.copy()
+print(train_user[0][0])
+for enum, list in enumerate(train_user[0]):
+    for i in range(len(list)):
+        list[i] = enum + 1
+with open(dir + 'nyc_usersData.txt', 'w') as f:
+    f.write(str(train_user))

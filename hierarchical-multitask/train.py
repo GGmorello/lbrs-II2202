@@ -12,7 +12,7 @@ import random
 
 if __name__ == '__main__': 
 
-    for dataSource in ['global_scale']:
+    for dataSource in ['nyc']:
         arg = {}
 
         start_time = time.time()
