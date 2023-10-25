@@ -27,7 +27,7 @@ def create_spatial_dump():
             for j in range(i, l):
                 item2 = pairs[j]
                 edges.append((item1,item2))
-    
+    edges.append((0,0))
     f_spatial = open(spatial_graph_curr_fname, 'w')
     for edge in edges:
         s = str(edge[0]) + " " + str(edge[1]) + " {}\n"

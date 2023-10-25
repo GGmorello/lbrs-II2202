@@ -45,11 +45,13 @@ def create_geo2other_dumps(i, copy):
         if hash2poi.get(val) == None:
             hash2poi[val] = list()
         hash2poi[val].append(poi)
+    hash2poi[0] = []
     fname_geo2poi = get_geo2poi_file_name(i)
     f_geo2poi = open(fname_geo2poi, 'wb')
     pickle.dump(hash2poi, f_geo2poi)
     print("dumped geo2poi file contents in path: " , fname_geo2poi)
 
+    geohash_idx_dict[0] = 0
     fname_geohash_idx = get_geohash2index_file_name(i)
     f_geohash_idx = open(fname_geohash_idx, 'wb')
     pickle.dump(geohash_idx_dict, f_geohash_idx)
@@ -80,6 +82,7 @@ def create_dumps(content):
     for i in range (2,7,1):
         copy = dict(map(lambda item: (item[0], item[1][0:i]), content.items()))
         create_poi2geo_dump(i, copy)
+        copy = dict(map(lambda item: (item[0], item[1][0:i]), content.items()))
         create_geo2other_dumps(i, copy)
 
 def verify_poi2geohash(i):
