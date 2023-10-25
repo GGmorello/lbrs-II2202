@@ -24,6 +24,7 @@ def get_beam_file_name():
     return data_source + '_beamSearchHashDict' + prefix + '.pickle'
 
 def create_poi2geo_dump(i, copy):
+    copy[0] = 0
     fname_poi2geo = get_poi2geo_file_name(i)
     f_poi2geo = open(fname_poi2geo, 'wb')
     pickle.dump(copy, f_poi2geo)
