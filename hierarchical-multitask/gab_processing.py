@@ -8,9 +8,11 @@ data = pd.read_csv('nycdata/dataset_TSMC2014_NYC.txt', sep='\t', header=None, na
 # with open(dir + 'global_scale_allData.pickle', 'rb') as f:
 #    data = pickle.load(f)
 
-
-
 # data.reset_index(drop=True, inplace=True)
+
+
+# take only the first 100 unique users
+data = data[data['USER'].isin(data['USER'].unique()[:100])]
 
 
 locations = data[['POI', 'lat', 'lon']].drop_duplicates()
@@ -33,12 +35,14 @@ venue_id_dict = {}
 print(tuples_venue_id)
 for i in range(len(tuples_venue_id[0])):
     venue_id_dict[tuples_venue_id[0].iloc[i]] = tuples_venue_id[1].iloc[i]
-with open(dir + 'nyc_poi2index.pickle', 'wb') as f:
+with open(dir + 'nyc_poi2index.pkl', 'wb') as f:
     pickle.dump(venue_id_dict, f)
 with open(dir + 'nyc_poi2index.txt', 'w') as f:
     f.write(str(venue_id_dict))
 
 data['POI'] = data['POI'].astype('category').cat.codes + 1
+
+print(" number of unique POIs", len(data['POI'].unique()))
 
 
 # refactor the User ID to growing integers and write to file the conversion from old to new
