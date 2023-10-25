@@ -247,7 +247,7 @@ class classificationDataset(Dataset):
             data_root = 'data/' + arg['dataFolder'] + '/gowalla_train.pkl'
         elif dataSource == 'global_scale':
             data_root = 'data/' + arg['dataFolder'] + '/global_scale_train.pkl'
-        elif dataSourcec == 'nyc':
+        elif dataSource == 'nyc':
             data_root = 'data/' + arg['dataFolder'] + '/nyc_train.pkl'
 
 

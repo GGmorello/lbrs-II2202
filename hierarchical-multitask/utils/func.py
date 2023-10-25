@@ -14,9 +14,9 @@ def evaluate(model, dataSource, arg):
         data_root = 'data/' + arg['dataFolder'] + '/global_scale_train.pkl'
         save_dir = 'data/' + arg['dataFolder'] + '/global_scale_test.pkl'
 
-    # elif dataSource == 'nyc_checkin':
-    #     data_root = 'data/' + arg['dataFolder'] + '/nyc_checking_train.pkl'
-    #     data_root = 'data/' + arg['dataFolder'] + '/nyc_checking_test.pkl'
+    elif dataSource == 'nyc_checkin':
+        data_root = 'data/' + arg['dataFolder'] + '/nyc_checking_train.pkl'
+        data_root = 'data/' + arg['dataFolder'] + '/nyc_checking_test.pkl'
 
     with open(save_dir,'rb') as f:
         test_pois_seq, test_delta_t_seq, test_delta_d_seq = cPickle.load(f)
