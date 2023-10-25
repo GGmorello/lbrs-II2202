@@ -1,9 +1,9 @@
 import pandas as pd
 from datetime import datetime
 
-data_source = "global_scale"
+data_source = "nyc"
 
-temporal_graph_curr_fname = data_source + "_temporal_test.edgelist"
+prefix = "_test"
 
 def reduce_timestamp_to_day(t):
     return t.split("-")[2].split("T")[0]
@@ -29,39 +29,38 @@ def reduce_timestamp_to_slot(ts, dow):
 
 def compute_jaccard(slots1, slots2):
     limit = 0.9
-    union = list(set(slots1 + slots2))
+    union = list(set(slots1.union(slots2)))
     intersect = list(set(slots1) & set(slots2))
     return (len(intersect)* 1.0)/(len(union)* 1.0) >= limit
 
 def create_temporal_dump(df):
-    pois_dict = dict()
-    slots_dict = dict()
-    for idx, row in df.iterrows():
-        poi = row['POI']
-        if not poi in pois_dict:
-            pois_dict[poi] = []
+    pois_dict = {}  # Use a set instead of list to eliminate duplicates
+    slots_dict = {}
 
+    temporal_graph_curr_fname = data_source + "_temporal" + prefix + ".edgelist"
+    f_temporal = open(temporal_graph_curr_fname, 'w')
+
+    for _, row in df.iterrows():
+        poi = row['POI']
         slot = row['slot']
-        pois_dict[poi].append(slot)
+
+        if poi not in pois_dict:
+            pois_dict[poi] = set()
+        pois_dict[poi].add(slot)
 
         if slot not in slots_dict:
-            slots_dict[slot] = list()
-        if poi not in slots_dict[slot]:
-            slots_dict[slot].append(poi)
-    
-    f_temporal = open(temporal_graph_curr_fname, 'w')
-    keys = pois_dict.keys()
-    computed_pois = dict()
-    for poi in keys:
+            slots_dict[slot] = set()
+        slots_dict[slot].add(poi)
+
+    computed_pois = set()
+    for poi, slots in pois_dict.items():
         print("processing key", poi)
-        slots = pois_dict[poi]
         for slot in slots:
-            # entries in slots_dict containt distinct values
-            other_pois = slots_dict[slot]
+            other_pois = slots_dict[slot]  # Use set difference to exclude current poi
             for other_poi in other_pois:
-                if ((poi in computed_pois and other_poi in computed_pois[poi]) or
-                    (other_poi in computed_pois and poi in computed_pois[other_poi])):
+                if (poi, other_poi) in computed_pois or (other_poi, poi) in computed_pois:
                     continue
+
                 other_slots = pois_dict[other_poi]
 
                 if compute_jaccard(slots, other_slots):
@@ -69,16 +68,16 @@ def create_temporal_dump(df):
                     print("adding edge to file", e)
                     f_temporal.write(e)
                 
-                if poi not in computed_pois:
-                    computed_pois[poi] = []
-                if other_poi not in computed_pois:
-                    computed_pois[other_poi] = []
+                computed_pois.add((poi, other_poi))
+                computed_pois.add((other_poi, poi))
+    print("dumped temporal graph in file", temporal_graph_curr_fname)
 
-                computed_pois[poi].append(other_poi)
-                computed_pois[other_poi].append(poi)
-    
+# Your compute_jaccard function remains unchanged
+
 if __name__ == "__main__":
     file = data_source + "_allData.pickle"
+    if data_source == "nyc":
+        prefix = ""
     # file = "nycdata/test.tsv"
     columns = ['id','user id','venue id','venue cat id','lat', 'lon', 'offset', 'utc']
     df = pd.read_pickle(file)

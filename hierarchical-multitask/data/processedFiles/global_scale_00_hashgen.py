@@ -3,24 +3,25 @@ import pandas as pd
 import numpy as np
 import pygeohash as pgh
 
-data_source = "global_scale"
+data_source = "nyc"
+postfix = "_test"
 
 all_data_file = data_source + '_allData.pickle'
 
 def get_poi2geo_file_name(hash_len):
-    base_name = data_source + '_poi2geohash_test'
+    base_name = data_source + '_poi2geohash' + prefix
     return base_name + '_' + str(hash_len) + '.pickle'
 
 def get_geo2poi_file_name(hash_len):
-    base_name = data_source + '_geohash2poi_test'
+    base_name = data_source + '_geohash2poi' + prefix
     return base_name + '_' + str(hash_len) + '.pickle'
 
 def get_geohash2index_file_name(hash_len):
-    base_name = data_source + '_geohash2Index_test'
+    base_name = data_source + '_geohash2Index' + prefix
     return base_name + '_' + str(hash_len) + '.pickle'
 
 def get_beam_file_name():
-    return data_source + '_beamSearchHashDict_test.pickle'
+    return data_source + '_beamSearchHashDict' + prefix + '.pickle'
 
 def create_poi2geo_dump(i, copy):
     fname_poi2geo = get_poi2geo_file_name(i)
@@ -187,6 +188,8 @@ if __name__ == "__main__":
         lon = group_name[2]
         geohash = pgh.encode(latitude=lat, longitude=lon)
         content[poi] = geohash[0:6]
-
+    if data_source == "nyc":
+        prefix = ""
     create_dumps(content)
-    verify()
+    if data_source != "nyc":
+        verify()

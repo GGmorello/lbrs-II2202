@@ -61,6 +61,7 @@ with open(dir + 'nyc_poiCount.txt', 'w') as f:
 
 # write to file the data in the format: user ID, venue ID, timestamp, latitude, longitude
 data['timestamp'] = pd.to_datetime(data['timestamp'])
+data['timestamp'] = data['timestamp'].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 # add column for country code and set to US for all rows
 data['Country_code'] = 'US'

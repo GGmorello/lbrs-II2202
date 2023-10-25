@@ -1,13 +1,14 @@
 import pickle
 
-data_source = "global_scale"
+data_source = "nyc"
 
-spatial_graph_curr_fname = data_source + "_spatial_test.edgelist"
+prefix = "_test"
 spatial_graph_orig_fname = data_source + "_spatial.edgelist"
 
 # POIs that have the same 4 letter hash prefix
 # are in the same cell, and should have edges between them
 def create_spatial_dump():
+    spatial_graph_curr_fname = data_source + "_spatial" + prefix + ".edgelist"
     fname_hashes = data_source + "_geohash2poi_4.pickle"
     f_hashes = open(fname_hashes, 'rb')
     hashes_dict = pickle.load(f_hashes)
@@ -61,5 +62,8 @@ def verify():
     print("verified contents of file", spatial_graph_curr_fname)
 
 if __name__ == "__main__":
+    if data_source == "nyc":
+        prefix = ""
     create_spatial_dump()
-    verify()
+    if data_source != "nyc":
+        verify()
