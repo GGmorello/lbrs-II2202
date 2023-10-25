@@ -32,6 +32,7 @@ data = data.groupby('POI').filter(lambda x: len(x) >= 10)
 old_venue_id = data['POI']
 tuples_venue_id = (old_venue_id, data['POI'].astype('category').cat.codes + 1)
 venue_id_dict = {}
+venue_id_dict['UNK'] = 0
 print(tuples_venue_id)
 for i in range(len(tuples_venue_id[0])):
     venue_id_dict[tuples_venue_id[0].iloc[i]] = tuples_venue_id[1].iloc[i]
